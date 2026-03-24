@@ -1,0 +1,161 @@
+{
+  "identity": {
+    "name": "E1",
+    "role": "Anti-AI Creative Designer",
+    "principles": [
+      "Fusion over Imitation",
+      "Emotion First",
+      "Content is King",
+      "Zoom In",
+      "Negative Space",
+      "Contrast"
+    ]
+  },
+  "project": {
+    "name": "Rack&Roll Cafe",
+    "type": "Experience Landing Page + Booking Utility",
+    "theme": "Dark Mode (Mandatory)",
+    "vibe": "Underground Club, Electric, Competitive, Premium",
+    "target_audience": "Gamers, Young Adults, Snooker Enthusiasts"
+  },
+  "typography": {
+    "fonts": {
+      "heading": {
+        "family": "Outfit",
+        "fallback": "sans-serif",
+        "weights": ["700", "900"],
+        "usage": "Hero titles, Section headers, Feature names. Use uppercase for maximum impact."
+      },
+      "body": {
+        "family": "Outfit",
+        "fallback": "sans-serif",
+        "weights": ["300", "400"],
+        "usage": "Paragraphs, UI labels, Forms"
+      },
+      "accent": {
+        "family": "Playfair Display",
+        "fallback": "serif",
+        "weights": ["600", "700", "800"],
+        "style": "italic",
+        "usage": "Menu items, 'Gentleman's Club' quotes, Special offers, Testimonials"
+      }
+    },
+    "scale": {
+      "h1": "text-6xl md:text-8xl tracking-tighter leading-[0.9]",
+      "h2": "text-4xl md:text-6xl tracking-tight leading-none",
+      "h3": "text-2xl md:text-3xl font-bold tracking-tight",
+      "body": "text-base md:text-lg leading-relaxed text-muted-foreground",
+      "label": "text-xs font-bold uppercase tracking-widest text-muted-foreground"
+    }
+  },
+  "colors": {
+    "palette": {
+      "primary": "#00A859",
+      "primary_foreground": "#FFFFFF",
+      "secondary": "#F5A623",
+      "background": "#050505",
+      "foreground": "#EDEDED",
+      "card": "#121212",
+      "card_foreground": "#FFFFFF",
+      "border": "#2A2A2A",
+      "muted": "#1A1A1A",
+      "muted_foreground": "#A1A1AA",
+      "accent": "#1F1F1F"
+    },
+    "gradients": {
+      "hero_glow": "radial-gradient(circle at center, rgba(0, 168, 89, 0.15) 0%, transparent 70%)",
+      "neon_border": "linear-gradient(90deg, transparent, #00A859, transparent)"
+    },
+    "utility_classes": {
+      "glass": "bg-black/40 backdrop-blur-xl border border-white/10",
+      "glass_card": "bg-[#121212]/80 backdrop-blur-md border border-white/5 hover:border-[#00A859]/50 transition-colors duration-300"
+    }
+  },
+  "layout": {
+    "container": "max-w-[1400px] mx-auto px-6 md:px-12",
+    "spacing": {
+      "section_gap": "py-24 md:py-32",
+      "element_gap": "gap-6 md:gap-12"
+    },
+    "grid_system": {
+      "bento_mode_a": "grid grid-cols-1 md:grid-cols-8 lg:grid-cols-12 gap-6",
+      "menu_grid": "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+    }
+  },
+  "visual_enhancers": {
+    "texture": "Add a subtle noise overlay (opacity 0.03) to the entire body to kill digital flatness.",
+    "borders": "Use 'Tracing Beam' effect on key cards (moving gradient border).",
+    "shadows": "shadow-[0_0_30px_-10px_rgba(0,168,89,0.3)] for primary actions.",
+    "animations": {
+      "scroll": "Use GSAP ScrollTrigger for section reveals. Elements should slide up and fade in.",
+      "hover": "Images should scale (1.05) and desaturate->saturate on hover.",
+      "micro": "Buttons should have a magnetic feel or glow expansion on hover."
+    }
+  },
+  "components": {
+    "navbar": {
+      "style": "Floating Glass Pill",
+      "position": "fixed top-6 left-1/2 -translate-x-1/2 z-50",
+      "classes": "w-[90%] md:w-auto px-8 py-4 rounded-full bg-black/50 backdrop-blur-xl border border-white/10 flex items-center justify-between gap-8"
+    },
+    "buttons": {
+      "primary": "bg-[#00A859] text-white px-8 py-3 rounded-none font-bold tracking-widest hover:bg-[#008f4c] transition-all clip-path-slant",
+      "secondary": "bg-transparent border border-[#F5A623] text-[#F5A623] px-8 py-3 rounded-none hover:bg-[#F5A623]/10 transition-all",
+      "ghost": "text-white/60 hover:text-white transition-colors"
+    },
+    "cards": {
+      "gaming_setup": "group relative overflow-hidden bg-zinc-900/50 border border-white/10 p-0 aspect-[4/5] md:aspect-auto",
+      "menu_item": "flex flex-col gap-4 p-6 bg-zinc-900/30 border border-white/5 hover:border-white/20 transition-all"
+    }
+  },
+  "media": {
+    "images": {
+      "hero_bg": "Use a high-quality dark interior shot or abstract smoke/neon texture.",
+      "snooker": "https://images.pexels.com/photos/19554778/pexels-photo-19554778.jpeg",
+      "pool": "https://images.pexels.com/photos/6032554/pexels-photo-6032554.jpeg",
+      "ps5_controller": "https://images.pexels.com/photos/14824329/pexels-photo-14824329.jpeg",
+      "burger": "https://images.pexels.com/photos/4315148/pexels-photo-4315148.jpeg",
+      "cocktails": "https://images.pexels.com/photos/110472/pexels-photo-110472.jpeg",
+      "texture_ball": "https://images.unsplash.com/photo-1642191135995-6de2cce0bbdc"
+    },
+    "icons": "Use Lucide React (default) or Phosphor Icons (if installed) for UI elements. Use simple, thin strokes."
+  },
+  "libraries": {
+    "required": [
+      "gsap",
+      "@gsap/react",
+      "lenis",
+      "framer-motion",
+      "clsx",
+      "tailwind-merge",
+      "@phosphor-icons/react"
+    ],
+    "installation_command": "yarn add gsap @gsap/react lenis framer-motion clsx tailwind-merge @phosphor-icons/react"
+  },
+  "instructions_to_main_agent": [
+    "PHASE 1: Setup - Install required libraries immediately.",
+    "PHASE 2: Global Styles - Update index.css with the dark theme variables and base font settings. Add the noise texture overlay.",
+    "PHASE 3: Components - Build the 'Glass' primitives (Card, Button, Input) first. Do not use default Shadcn styles; override them with the 'Anti-AI' styles defined above.",
+    "PHASE 4: Layout - Assemble the Landing Page. Use GSAP for the scroll animations. Implement the Bento Grid for the 'Play' section.",
+    "PHASE 5: Features - Implement the 'AI Lounge' using a chat-like interface. It should feel like a terminal or a futuristic messenger.",
+    "PHASE 6: Polishing - Check contrast ratios. Ensure the Green (#00A859) is used sparingly for impact, not flooding the screen."
+  ],
+  "universal_guidelines": [
+    "Dark colors look good when used independently without gradients. DO NOT use dark colors as gradients",
+    "Don't make generic centered layouts, simplistic gradients, and uniform styling.",
+    "Create depth through layered design elements with z-index hierarchy",
+    "Use glass-morphism effects with backdrop filters (12-24px blur)",
+    "You MUST NOT apply universal transition. Eg: transition: all. This results in breaking transforms. Always add transitions for specific interactive elements like button, input excluding transforms",
+    "You MUST NOT center align the app container, ie do not add .App { text-align: center; } in the css file. This disrupts the human natural reading flow of text",
+    "Always use modern button styles like pill-shaped, or sharp button with interaction animations & color relevant to the app style",
+    "NEVER: use AI assistant Emoji characters like 🤖 etc for icons.",
+    "Every interaction needs micro-animations - hover states, transitions, parallax effects, and entrance animations. Static = dead.",
+    "Use 2-3x more spacing than feels comfortable. Cramped designs look cheap.",
+    "Subtle grain textures, noise overlays, custom cursors, selection states, and loading animations: separates good from extraordinary.",
+    "Main agent relies on these image URLs. Missing categories = main agent will use placeholder text which is FORBIDDEN",
+    "Prioritize using pre-existing components from src/components/ui when applicable",
+    "Components MUST use named exports (export const ComponentName = ...)",
+    "Pages MUST use default exports (export default function PageName() {...})",
+    "Use sonner for toasts"
+  ]
+}
