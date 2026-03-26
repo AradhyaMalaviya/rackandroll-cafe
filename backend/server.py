@@ -123,7 +123,7 @@ async def get_menu_categories():
     categories = await db.menu_items.distinct("category")
     return {"categories": categories}
 
-@api_router.post("/bookings", response_model=BookingResponse)
+@api_router.post("/bookings", response_model=BookingResponse, status_code=201)
 async def create_booking(input_data: BookingCreate):
     if not input_data.activities:
         raise HTTPException(status_code=400, detail="Please select at least one activity")
