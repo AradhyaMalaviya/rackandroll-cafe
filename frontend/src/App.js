@@ -45,7 +45,7 @@ export default function App() {
       <PlaySection />
       <MenuSection items={menuItems} categories={categories} />
       <AILounge apiUrl={API} />
-      <BookingSection apiUrl={API} />
+      <BookingSection apiUrl={API} menuItems={menuItems} />
       <Footer />
     </div>
   );

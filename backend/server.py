@@ -47,6 +47,11 @@ class ActivitySelection(BaseModel):
     activity: str
     quantity: int = 1
 
+class FoodOrderItem(BaseModel):
+    name: str
+    quantity: int
+    price_per_item: float
+
 class BookingCreate(BaseModel):
     name: str
     phone: str
@@ -56,6 +61,7 @@ class BookingCreate(BaseModel):
     activities: List[ActivitySelection]
     group_size: int
     notes: Optional[str] = None
+    food_orders: Optional[List[FoodOrderItem]] = []
 
 class BookingResponse(BaseModel):
     model_config = ConfigDict(extra="ignore")
@@ -68,6 +74,8 @@ class BookingResponse(BaseModel):
     activities: List[ActivitySelection]
     group_size: int
     notes: Optional[str] = None
+    food_orders: Optional[List[FoodOrderItem]] = []
+    food_total: float = 0
     status: str = "confirmed"
     created_at: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
 
@@ -86,6 +94,31 @@ async def send_booking_email(booking: BookingResponse):
         f"<td style='padding:8px 12px;border-bottom:1px solid #eee;text-align:center;'>{a.quantity}</td></tr>"
         for a in booking.activities
     )
+
+    food_html = ""
+    if booking.food_orders:
+        food_rows = "".join(
+            f"<tr><td style='padding:8px 12px;border-bottom:1px solid #eee;'>{f.name}</td>"
+            f"<td style='padding:8px 12px;border-bottom:1px solid #eee;text-align:center;'>{f.quantity}</td>"
+            f"<td style='padding:8px 12px;border-bottom:1px solid #eee;text-align:right;'>&#8377;{f.price_per_item:.0f}</td>"
+            f"<td style='padding:8px 12px;border-bottom:1px solid #eee;text-align:right;font-weight:bold;'>&#8377;{f.price_per_item * f.quantity:.0f}</td></tr>"
+            for f in booking.food_orders
+        )
+        food_html = f"""
+        <h3 style="color:#333;">Food Order</h3>
+        <table style="width:100%;border-collapse:collapse;margin-bottom:8px;">
+          <tr style="background:#F5A623;color:white;">
+            <th style="padding:10px 12px;text-align:left;">Item</th>
+            <th style="padding:10px 12px;text-align:center;">Qty</th>
+            <th style="padding:10px 12px;text-align:right;">Price</th>
+            <th style="padding:10px 12px;text-align:right;">Total</th>
+          </tr>
+          {food_rows}
+        </table>
+        <p style="text-align:right;font-size:16px;font-weight:bold;color:#333;margin-bottom:16px;">
+          Food Total: <span style="color:#00A859;">&#8377;{booking.food_total:.0f}</span>
+        </p>
+        """
 
     html_content = f"""
     <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;background:#f9f9f9;padding:20px;">
@@ -111,6 +144,7 @@ async def send_booking_email(booking: BookingResponse):
           </tr>
           {activities_html}
         </table>
+        {food_html}
         <p style="color:#666;font-size:12px;margin-top:16px;">Booking ID: {booking.id}<br>Status: {booking.status}<br>Created: {booking.created_at}</p>
       </div>
     </div>
@@ -223,6 +257,9 @@ async def create_booking(input_data: BookingCreate):
 
     booking_data = input_data.model_dump()
     booking_data["activities"] = [a.model_dump() for a in input_data.activities]
+    booking_data["food_orders"] = [f.model_dump() for f in (input_data.food_orders or [])]
+    food_total = sum(f.price_per_item * f.quantity for f in (input_data.food_orders or []))
+    booking_data["food_total"] = food_total
     booking = BookingResponse(**booking_data)
     doc = booking.model_dump()
     await db.bookings.insert_one(doc)

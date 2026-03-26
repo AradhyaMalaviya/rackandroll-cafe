@@ -153,6 +153,83 @@ class RackRollAPITester:
                 print("⚠️  Booking response missing activities or incorrect format")
         return False, None
 
+    def test_food_ordering_integration(self):
+        """Test food ordering integration with bookings"""
+        print("\n🍔 Testing Food Ordering Integration...")
+        tomorrow = (datetime.now() + timedelta(days=1)).strftime('%Y-%m-%d')
+        
+        # Test booking with food orders
+        booking_data = {
+            "name": "Food Test User",
+            "phone": "9260940348",
+            "email": "foodtest@example.com",
+            "date": tomorrow,
+            "time_slot": "3:00 PM - 4:00 PM",
+            "activities": [
+                {"activity": "Pool", "quantity": 1}
+            ],
+            "group_size": 2,
+            "notes": "Test booking with food orders",
+            "food_orders": [
+                {"name": "Smash Burger", "quantity": 2, "price_per_item": 249},
+                {"name": "Loaded Fries", "quantity": 1, "price_per_item": 149},
+                {"name": "Iced Caramel Latte", "quantity": 2, "price_per_item": 129}
+            ]
+        }
+        
+        success, response = self.run_test("Create Booking with Food Orders", "POST", "bookings", 201, 
+                                        data=booking_data)
+        if success and response:
+            # Check food orders in response
+            if 'food_orders' in response and len(response['food_orders']) == 3:
+                print("✅ Food orders included in booking response")
+                
+                # Check food total calculation
+                expected_total = (249 * 2) + (149 * 1) + (129 * 2)  # 905
+                actual_total = response.get('food_total', 0)
+                if actual_total == expected_total:
+                    print(f"✅ Food total calculated correctly: ₹{actual_total}")
+                else:
+                    print(f"❌ Food total mismatch: expected ₹{expected_total}, got ₹{actual_total}")
+                
+                # Check individual food items
+                food_items = response['food_orders']
+                food_summary = [f"{item['name']} x{item['quantity']}" for item in food_items]
+                print(f"   Food items: {food_summary}")
+                return True, response.get('id')
+            else:
+                print("⚠️  Food orders missing or incorrect in response")
+        return False, None
+
+    def test_booking_without_food(self):
+        """Test booking without food orders (optional field)"""
+        print("\n🎯 Testing Booking Without Food...")
+        tomorrow = (datetime.now() + timedelta(days=1)).strftime('%Y-%m-%d')
+        
+        booking_data = {
+            "name": "No Food User",
+            "phone": "9260940349",
+            "date": tomorrow,
+            "time_slot": "4:00 PM - 5:00 PM",
+            "activities": [
+                {"activity": "PS5", "quantity": 2}
+            ],
+            "group_size": 4,
+            "notes": "Test booking without food orders"
+            # No food_orders field - should default to empty
+        }
+        
+        success, response = self.run_test("Create Booking without Food", "POST", "bookings", 201, 
+                                        data=booking_data)
+        if success and response:
+            food_total = response.get('food_total', -1)
+            if food_total == 0:
+                print("✅ Food total correctly set to 0 when no food orders")
+                return True, response.get('id')
+            else:
+                print(f"⚠️  Food total should be 0, got {food_total}")
+        return False, None
+
     def test_booking_validation(self):
         """Test booking validation (no activities)"""
         print("\n⚠️  Testing Booking Validation...")
@@ -195,6 +272,8 @@ def main():
         tester.test_ai_planner,
         tester.test_booking_availability,
         tester.test_multi_activity_booking,
+        tester.test_food_ordering_integration,
+        tester.test_booking_without_food,
         tester.test_booking_validation,
         tester.test_get_bookings
     ]
