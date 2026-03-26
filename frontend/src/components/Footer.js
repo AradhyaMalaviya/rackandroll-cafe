@@ -100,11 +100,11 @@ export const Footer = () => {
               </li>
               <li className="flex items-center gap-3" data-testid="footer-phone">
                 <Phone size={18} className="text-[#00A859] flex-shrink-0" />
-                <span className="text-[#A1A1AA]">+1 (555) 019-8273</span>
+                <span className="text-[#A1A1AA]">9260940347</span>
               </li>
               <li className="mt-6">
                 <a
-                  href="https://maps.google.com"
+                  href="https://maps.app.goo.gl/9ireFo9o6A3oThB37"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="block w-full py-3.5 text-center bg-white/5 hover:bg-[#00A859] text-white font-bold rounded-lg transition-all duration-300 border border-white/10 hover:border-[#00A859] text-sm tracking-wider"

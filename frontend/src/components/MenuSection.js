@@ -91,7 +91,7 @@ export const MenuSection = ({ items, categories }) => {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#121212] via-transparent to-transparent" />
                 <div className="absolute bottom-3 right-3 bg-[#00A859] text-white text-sm font-bold px-3 py-1 rounded-full">
-                  ${item.price.toFixed(2)}
+                  {"\u20B9"}{Math.round(item.price)}
                 </div>
               </div>
               <div className="p-5">
