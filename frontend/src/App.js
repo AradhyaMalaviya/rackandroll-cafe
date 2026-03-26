@@ -1,54 +1,52 @@
-import { useEffect } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import "@/App.css";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
 import axios from "axios";
+import { Navbar } from "@/components/Navbar";
+import { Hero } from "@/components/Hero";
+import { PlaySection } from "@/components/PlaySection";
+import { MenuSection } from "@/components/MenuSection";
+import { AILounge } from "@/components/AILounge";
+import { BookingSection } from "@/components/BookingSection";
+import { Footer } from "@/components/Footer";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
-const Home = () => {
-  const helloWorldApi = async () => {
-    try {
-      const response = await axios.get(`${API}/`);
-      console.log(response.data.message);
-    } catch (e) {
-      console.error(e, `errored out requesting / api`);
-    }
-  };
+export default function App() {
+  const [menuItems, setMenuItems] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const mainRef = useRef(null);
 
-  useEffect(() => {
-    helloWorldApi();
+  const fetchMenu = useCallback(async () => {
+    try {
+      const [itemsRes, catsRes] = await Promise.all([
+        axios.get(`${API}/menu`),
+        axios.get(`${API}/menu/categories`)
+      ]);
+      setMenuItems(itemsRes.data);
+      setCategories(catsRes.data.categories);
+    } catch (e) {
+      console.error("Failed to fetch menu:", e);
+    }
   }, []);
 
-  return (
-    <div>
-      <header className="App-header">
-        <a
-          className="App-link"
-          href="https://emergent.sh"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <img src="https://avatars.githubusercontent.com/in/1201222?s=120&u=2686cf91179bbafbc7a71bfbc43004cf9ae1acea&v=4" />
-        </a>
-        <p className="mt-5">Building something incredible ~!</p>
-      </header>
-    </div>
-  );
-};
+  useEffect(() => {
+    fetchMenu();
+  }, [fetchMenu]);
 
-function App() {
   return (
-    <div className="App">
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Home />}>
-            <Route index element={<Home />} />
-          </Route>
-        </Routes>
-      </BrowserRouter>
+    <div ref={mainRef} className="relative">
+      {/* Ambient orbs */}
+      <div className="floating-orb bg-[#00A859] w-[500px] h-[500px] top-0 -left-40 opacity-[0.07] fixed" />
+      <div className="floating-orb bg-[#F5A623] w-[350px] h-[350px] bottom-1/4 -right-20 opacity-[0.04] fixed" />
+
+      <Navbar />
+      <Hero />
+      <PlaySection />
+      <MenuSection items={menuItems} categories={categories} />
+      <AILounge apiUrl={API} />
+      <BookingSection apiUrl={API} />
+      <Footer />
     </div>
   );
 }
-
-export default App;

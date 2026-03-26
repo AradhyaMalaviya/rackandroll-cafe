@@ -1,34 +1,153 @@
-.App-logo {
-    height: 40vmin;
-    pointer-events: none;
+/* Rack&Roll Cafe - Custom Styles */
+
+.glass-nav {
+  background: rgba(5, 5, 5, 0.6);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
 }
 
-@media (prefers-reduced-motion: no-preference) {
-    .App-logo {
-        animation: App-logo-spin infinite 20s linear;
-    }
+.hero-gradient {
+  background: linear-gradient(
+    to bottom,
+    rgba(5, 5, 5, 0.2) 0%,
+    rgba(5, 5, 5, 0.6) 50%,
+    rgba(5, 5, 5, 1) 100%
+  );
 }
 
-.App-header {
-    background-color: #0f0f10;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    font-size: calc(10px + 2vmin);
-    color: white;
+.glass-card {
+  background: rgba(18, 18, 18, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-.App-link {
-    color: #61dafb;
+.glass-card:hover {
+  border-color: rgba(0, 168, 89, 0.3);
+  box-shadow: 0 20px 40px rgba(0, 168, 89, 0.08);
 }
 
-@keyframes App-logo-spin {
-    from {
-        transform: rotate(0deg);
-    }
-    to {
-        transform: rotate(360deg);
-    }
+.feature-card-img {
+  transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
 }
+
+.group:hover .feature-card-img {
+  transform: scale(1.08);
+}
+
+.glow-green {
+  box-shadow: 0 0 30px -10px rgba(0, 168, 89, 0.4);
+}
+
+.glow-amber {
+  box-shadow: 0 0 30px -10px rgba(245, 166, 35, 0.4);
+}
+
+.floating-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.terminal-card {
+  background: linear-gradient(145deg, #0a0a0a, #121212);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  position: relative;
+  overflow: hidden;
+}
+
+.terminal-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--brand-amber), transparent);
+  opacity: 0.5;
+}
+
+.terminal-card-green::before {
+  background: linear-gradient(90deg, transparent, var(--brand-green), transparent);
+}
+
+.menu-tab-active {
+  color: var(--brand-green);
+  border-bottom: 2px solid var(--brand-green);
+}
+
+.menu-tab {
+  color: var(--text-muted);
+  border-bottom: 2px solid transparent;
+  transition: color 0.3s, border-color 0.3s;
+}
+
+.menu-tab:hover {
+  color: var(--text-primary);
+}
+
+.btn-primary {
+  background-color: var(--brand-green);
+  color: white;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  transition: background-color 0.3s, box-shadow 0.3s, transform 0.2s;
+}
+
+.btn-primary:hover {
+  background-color: var(--brand-green-dark);
+  box-shadow: 0 0 30px rgba(0, 168, 89, 0.4);
+  transform: translateY(-1px);
+}
+
+.btn-secondary {
+  background: transparent;
+  border: 1px solid rgba(245, 166, 35, 0.5);
+  color: var(--brand-amber);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  transition: background-color 0.3s, border-color 0.3s;
+}
+
+.btn-secondary:hover {
+  background-color: rgba(245, 166, 35, 0.1);
+  border-color: var(--brand-amber);
+}
+
+.neon-line {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--brand-green), transparent);
+}
+
+@keyframes pulse-glow {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-slide-up {
+  animation: slide-up 0.6s ease-out forwards;
+}
+
+.stagger-1 { animation-delay: 0.1s; }
+.stagger-2 { animation-delay: 0.2s; }
+.stagger-3 { animation-delay: 0.3s; }
+.stagger-4 { animation-delay: 0.4s; }
+.stagger-5 { animation-delay: 0.5s; }
