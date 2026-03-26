@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
 import os
+import asyncio
 import logging
 from pathlib import Path
 from pydantic import BaseModel, Field, ConfigDict
@@ -10,6 +11,7 @@ from typing import List, Optional
 import uuid
 from datetime import datetime, timezone
 from emergentintegrations.llm.chat import LlmChat, UserMessage
+import resend
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
@@ -19,6 +21,11 @@ client = AsyncIOMotorClient(mongo_url)
 db = client[os.environ['DB_NAME']]
 
 EMERGENT_LLM_KEY = os.environ.get('EMERGENT_LLM_KEY', '')
+RESEND_API_KEY = os.environ.get('RESEND_API_KEY', '')
+SENDER_EMAIL = os.environ.get('SENDER_EMAIL', 'onboarding@resend.dev')
+BOOKING_NOTIFY_EMAIL = 'aaradhya.malaviya2005@gmail.com'
+
+resend.api_key = RESEND_API_KEY
 
 app = FastAPI()
 api_router = APIRouter(prefix="/api")
@@ -70,6 +77,56 @@ class AIPlanRequest(BaseModel):
 
 class AIResponse(BaseModel):
     text: str
+
+
+async def send_booking_email(booking: BookingResponse):
+    """Send booking confirmation email to the cafe owner"""
+    activities_html = "".join(
+        f"<tr><td style='padding:8px 12px;border-bottom:1px solid #eee;'>{a.activity}</td>"
+        f"<td style='padding:8px 12px;border-bottom:1px solid #eee;text-align:center;'>{a.quantity}</td></tr>"
+        for a in booking.activities
+    )
+
+    html_content = f"""
+    <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;background:#f9f9f9;padding:20px;">
+      <div style="background:#00A859;color:white;padding:20px;border-radius:8px 8px 0 0;text-align:center;">
+        <h1 style="margin:0;font-size:24px;">New Booking at Rack&Roll Cafe</h1>
+      </div>
+      <div style="background:white;padding:24px;border-radius:0 0 8px 8px;border:1px solid #e0e0e0;">
+        <h2 style="color:#333;margin-top:0;">Booking Details</h2>
+        <table style="width:100%;border-collapse:collapse;margin-bottom:16px;">
+          <tr><td style="padding:8px 12px;color:#666;font-weight:bold;width:40%;">Customer Name</td><td style="padding:8px 12px;">{booking.name}</td></tr>
+          <tr style="background:#f9f9f9;"><td style="padding:8px 12px;color:#666;font-weight:bold;">Phone</td><td style="padding:8px 12px;">{booking.phone}</td></tr>
+          <tr><td style="padding:8px 12px;color:#666;font-weight:bold;">Email</td><td style="padding:8px 12px;">{booking.email or 'Not provided'}</td></tr>
+          <tr style="background:#f9f9f9;"><td style="padding:8px 12px;color:#666;font-weight:bold;">Date</td><td style="padding:8px 12px;">{booking.date}</td></tr>
+          <tr><td style="padding:8px 12px;color:#666;font-weight:bold;">Time Slot</td><td style="padding:8px 12px;color:#00A859;font-weight:bold;">{booking.time_slot}</td></tr>
+          <tr style="background:#f9f9f9;"><td style="padding:8px 12px;color:#666;font-weight:bold;">Group Size</td><td style="padding:8px 12px;">{booking.group_size} people</td></tr>
+          <tr><td style="padding:8px 12px;color:#666;font-weight:bold;">Notes</td><td style="padding:8px 12px;">{booking.notes or 'None'}</td></tr>
+        </table>
+        <h3 style="color:#333;">Selected Activities</h3>
+        <table style="width:100%;border-collapse:collapse;margin-bottom:16px;">
+          <tr style="background:#00A859;color:white;">
+            <th style="padding:10px 12px;text-align:left;">Activity</th>
+            <th style="padding:10px 12px;text-align:center;">Quantity</th>
+          </tr>
+          {activities_html}
+        </table>
+        <p style="color:#666;font-size:12px;margin-top:16px;">Booking ID: {booking.id}<br>Status: {booking.status}<br>Created: {booking.created_at}</p>
+      </div>
+    </div>
+    """
+
+    try:
+        params = {
+            "from": SENDER_EMAIL,
+            "to": [BOOKING_NOTIFY_EMAIL],
+            "subject": f"New Booking: {booking.name} - {booking.date} ({booking.time_slot})",
+            "html": html_content,
+        }
+        await asyncio.to_thread(resend.Emails.send, params)
+        logger.info(f"Booking email sent for booking {booking.id}")
+    except Exception as e:
+        logger.error(f"Failed to send booking email: {str(e)}")
 
 
 # --- Seed Menu Data (INR Prices) ---
@@ -169,6 +226,10 @@ async def create_booking(input_data: BookingCreate):
     booking = BookingResponse(**booking_data)
     doc = booking.model_dump()
     await db.bookings.insert_one(doc)
+
+    # Send email notification (non-blocking, don't fail booking if email fails)
+    asyncio.create_task(send_booking_email(booking))
+
     return booking
 
 @api_router.get("/bookings/availability")

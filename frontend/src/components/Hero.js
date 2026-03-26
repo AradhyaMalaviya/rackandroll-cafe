@@ -42,7 +42,7 @@ export const Hero = () => {
       <div className="absolute inset-0 z-0">
         <img
           src="https://images.unsplash.com/photo-1542031767-1736fb5e315b?auto=format&fit=crop&q=80"
-          alt="Pool table atmosphere"
+          alt=""
           className="hero-bg-img w-full h-full object-cover object-center opacity-35"
         />
         <div className="absolute inset-0 hero-gradient" />
