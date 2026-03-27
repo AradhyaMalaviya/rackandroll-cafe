@@ -103,7 +103,7 @@ export const Footer = () => {
               </li>
               <li className="mt-6">
                 <a
-                  href="https://maps.app.goo.gl/9ireFo9o6A3oThB37"
+                  href="https://maps.app.goo.gl/4moGabadV3xKhKncA"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="block w-full py-3.5 text-center bg-white/5 hover:bg-[#00A859] text-white font-bold rounded-lg transition-all duration-300 border border-white/10 hover:border-[#00A859] text-sm tracking-wider"
