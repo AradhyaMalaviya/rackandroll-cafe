@@ -16,14 +16,23 @@ import resend
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
-mongo_url = os.environ['MONGO_URL']
-client = AsyncIOMotorClient(mongo_url)
-db = client[os.environ['DB_NAME']]
+def get_env_var(var_name: str, default: str = None, required: bool = True) -> str:
+    value = os.environ.get(var_name, default)
+    if required and not value:
+        raise RuntimeError(f"ENVIRONMENT ERROR: Missing required environment variable '{var_name}'. "
+                           f"Please set it in your .env file or environment.")
+    return value
+
+mongo_url = get_env_var('MONGO_URL')
+db_name = get_env_var('DB_NAME', 'rackandroll')
 
 EMERGENT_LLM_KEY = os.environ.get('EMERGENT_LLM_KEY', '')
 RESEND_API_KEY = os.environ.get('RESEND_API_KEY', '')
 SENDER_EMAIL = os.environ.get('SENDER_EMAIL', 'onboarding@resend.dev')
 BOOKING_NOTIFY_EMAIL = 'aaradhya.malaviya2005@gmail.com'
+
+client = AsyncIOMotorClient(mongo_url)
+db = client[db_name]
 
 resend.api_key = RESEND_API_KEY
 
